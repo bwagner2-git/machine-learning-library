@@ -4,24 +4,46 @@ import easynn as nn
 # Create a numpy array of 10 rows and 5 columns.
 # Set the element at row i and column j to be i+j.
 def Q1():
-    return None
+    n=np.ones((10,5))
+    for i in range(10):
+        for j in range(5):
+            n[i,j]=i+j
+    return n
 
 # Add two numpy arrays together.
 def Q2(a, b):
-    return None
+    return a+b
 
 # Multiply two 2D numpy arrays using matrix multiplication.
 def Q3(a, b):
-    return None
+    return np.dot(a,b)
 
 # For each row of a 2D numpy array, find the column index
 # with the maximum element. Return all these column indices.
 def Q4(a):
-    return None
+    ans=[]
+    row=0
+    while True:
+        try:    ###start with first row
+            col=0 ###start with first column in row
+            big=a[row,0]
+            c=0
+            while True:
+                try:
+                    if a[row,col]>big:
+                        c=col
+                    col+=1
+                except:
+                    ans.append(int(c))
+                    row+=1
+                    break
+        except:
+            break
+    return ans
 
 # Solve Ax = b.
 def Q5(A, b):
-    return None
+    return np.linalg.inv(A)*b
 
 # Return an EasyNN expression for a+b.
 def Q6():
