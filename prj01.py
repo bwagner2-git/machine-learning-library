@@ -27,14 +27,15 @@ def Q4(a):
         try:    ###start with first row
             col=0 ###start with first column in row
             big=a[row,0]
-            c=0
+            index=0
             while True:
                 try:
                     if a[row,col]>big:
-                        c=col
+                        big=a[row,col]
+                        index=col
                     col+=1
                 except:
-                    ans.append(int(c))
+                    ans.append(int(index))
                     row+=1
                     break
         except:
@@ -43,19 +44,30 @@ def Q4(a):
 
 # Solve Ax = b.
 def Q5(A, b):
-    return np.linalg.inv(A)*b
+    return np.matmul(np.linalg.inv(A),b)
 
 # Return an EasyNN expression for a+b.
 def Q6():
-    return None
+    a=nn.Input("a")
+    b=nn.Input("b")
+    c=a+b
+    return c
 
 # Return an EasyNN expression for a+b*c.
 def Q7():
-    return None
+    a=nn.Input("a")
+    b=nn.Input("b")
+    c=nn.Input("c")
+    d=a+b*c
+    return d
 
 # Given A and b, return an EasyNN expression for Ax+b.
-def Q8(A, b):
-    return None
+def Q8(A, b):  ### how does it know x looked at syntax in grade file and does not make sense what does (x=x) at end of statement do?
+    A=nn.Input2d('A',A.size)
+    b=nn.Input2d('b')
+    x=nn.Input2d('x')
+    ans= matmul(A,x)+b
+    return ans
 
 # Given n, return an EasyNN expression for x**n.
 def Q9(n):
