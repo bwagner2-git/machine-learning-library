@@ -63,15 +63,21 @@ def Q7():
 
 # Given A and b, return an EasyNN expression for Ax+b.
 def Q8(A, b):  ### how does it know x looked at syntax in grade file and does not make sense what does (x=x) at end of statement do?
-    A=nn.Input2d('A',A.size)
-    b=nn.Input2d('b')
-    x=nn.Input2d('x')
-    ans= matmul(A,x)+b
+    A=nn.Const(A)
+    b=nn.Const(b)
+    x=nn.Input('x')
+    ans=A*x+b
     return ans
 
 # Given n, return an EasyNN expression for x**n.
 def Q9(n):
-    return None
+    a=n
+    x=nn.Input('x')
+    n=nn.Const(n)
+    ans=nn.Const(1)
+    for i in range(a):
+        ans=ans*x
+    return ans
 
 # Return an EasyNN expression to compute
 # the element-wise absolute value |x|.
