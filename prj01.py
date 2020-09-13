@@ -82,4 +82,6 @@ def Q9(n):
 # Return an EasyNN expression to compute
 # the element-wise absolute value |x|.
 def Q10():
-    return None
+    x=nn.Input('x')
+   
+    return nn.ReLU()(x)+nn.ReLU()(-x)
