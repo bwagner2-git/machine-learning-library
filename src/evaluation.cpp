@@ -1,7 +1,7 @@
 #include <assert.h>
 #include "evaluation.h"
 
-evaluation::evaluation(const std::vector<expression> &exprs)
+evaluation::evaluation(const std::vector<expression> &exprs) /// this is the consturctor like __init__ in python
     : result_(0)
 {
 }

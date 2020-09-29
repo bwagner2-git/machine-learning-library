@@ -2,11 +2,13 @@
 #define PROGRAM_H
 
 #include "expression.h"
+#include <vector> //////////added in
 
 class evaluation;
 
 class program
 {
+    std::vector<expression> exprs_;   ////added in
 public:
     program();
 

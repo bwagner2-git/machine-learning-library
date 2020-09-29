@@ -2,7 +2,7 @@
 #include "evaluation.h"
 
 program::program()
-{
+{                               /////// exprs_ will just default to an empty vector if we do not do anything here right, which is what we want?
 }
 
 void program::append_expression(
@@ -12,6 +12,7 @@ void program::append_expression(
     int inputs[],
     int num_inputs)
 {
+    exprs_.push_back(expression(expr_id, op_name, op_type, inputs, num_inputs));   //// we can just access exprs_ becuase it is a member function of program?   
 }
 
 int program::add_op_param_double(

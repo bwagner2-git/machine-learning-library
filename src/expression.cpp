@@ -5,8 +5,10 @@ expression::expression(
     const char *op_name,
     const char *op_type,
     int *inputs,
-    int num_inputs)
+    int num_inputs):
+    expr_id_(expr_id), op_name_(op_name), op_type_(op_type), inputs_(inputs, inputs+num_inputs)
 {
+    
 }
 
 void expression::add_op_param_double(

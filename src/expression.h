@@ -10,6 +10,12 @@ class evaluation;
 class expression
 {
     friend class evaluation;
+    //////////////////////
+    int expr_id_; /////////////added in
+    std::string op_name_;
+    std::string op_type_;
+    std::vector<int> inputs_;
+    /////////////////////////////
 public:
     expression(
         int expr_id,
