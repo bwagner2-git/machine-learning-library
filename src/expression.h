@@ -33,6 +33,13 @@ public:
         int dim,
         size_t shape[],
         double data[]);
+
+    std::string get_op_type();
+    std::string get_op_name();
+    int get_expr_id();
+    int get_num_inputs();
+    std::vector<int> get_inputs();
+
 }; // class expression
 
 #endif // EXPRESSION_H

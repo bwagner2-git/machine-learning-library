@@ -1,15 +1,19 @@
 #include <assert.h>
 #include "evaluation.h"
 
-evaluation::evaluation(const std::vector<expression> &exprs) /// this is the consturctor like __init__ in python
-    : result_(0)
-{
+evaluation::evaluation(const std::vector<expression> &exprs)/// why is this the only constructor with things in these parentheses /// this is the consturctor like __init__ in python 
+    : result_(0) ///what does this do here
+{ /// make a copy and work with the copy thats why you use const in constructor above along with reference ... still allitle unsure about what exactly a reference does?
+    exprs_= exprs;  /// look into difference between reference and a pointer initalize this variable with the reference &exprs 
+    /// do the other things just default to empty if I do not set them to anything
 }
 
 void evaluation::add_kwargs_double(
-    const char *key,
+    const char *key, //// shoulnt this be an int ???  isnt this going to be the expr id /// need something extra to store it in lecture 8 slide 28
+        /// store the key wod agrguments and look
     double value)
 {
+    kwargs_[key]=value; //// added in
 }
 
 void evaluation::add_kwargs_ndarray(
@@ -22,10 +26,26 @@ void evaluation::add_kwargs_ndarray(
 
 int evaluation::execute()
 {
-    return -1;
+    terms_.clear();
+    for(auto &expr: exprs_) {  /// for in loop
+        if (expr.get_op_type()=="Input"){
+            terms_[expr.get_expr_id()]=kwargs_[expr.get_op_name()];
+            result_=kwargs_[expr.get_op_name()];///is this right?
+        }
+        else if (expr.get_op_type()=="Add"){
+            int total = 0;
+            for(int i =0; i<expr.get_num_inputs(); i++){
+                total += expr.get_inputs()[i];
+            }
+            terms_[expr.get_expr_id()]=total;
+            result_=total;
+        }
+        }
+        return 0; ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
+
 }
 
 double &evaluation::get_result()
 {
-    return result_;
+    return result_; // is the result always the last espression evaluated?
 }

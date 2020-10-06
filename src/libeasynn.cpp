@@ -24,8 +24,8 @@ void append_expression(
     for (int i = 0; i != num_inputs; ++i)
         printf("%d,", inputs[i]);
     printf(")\n");
-    prog->append_expression(expr_id, op_name, op_type, inputs, num_inputs);
-}
+    prog->append_expression(expr_id, op_name, op_type, inputs, num_inputs);   //// why -> here instead of . ?
+} 
 
 int add_op_param_double(
     program *prog,
@@ -59,14 +59,14 @@ evaluation *build(program *prog)
     return eval;
 }
 
-void add_kwargs_double(
-    evaluation *eval,
+void add_kwargs_double( 
+    evaluation *eval,               /////////// this takes in a pointer to an evaluation then if you say eval below that is still that pointer right? thats why you use -> below?
     const char *key,
-    double value)
+    double value)      
 {
     printf("evaluation %p, key %s, value %f\n",
         eval, key, value);
-    eval->add_kwargs_double(key, value);
+    eval->add_kwargs_double(key, value);     
 }
 
 void add_kwargs_ndarray(

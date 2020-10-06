@@ -13,7 +13,7 @@ void program::append_expression(
     int num_inputs)
 {
     exprs_.push_back(expression(expr_id, op_name, op_type, inputs, num_inputs));   //// we can just access exprs_ becuase it is a member function of program?   
-}
+} //////////should I push to the front so that i can iterate through it in forward direction
 
 int program::add_op_param_double(
     const char *key,
@@ -31,7 +31,9 @@ int program::add_op_param_ndarray(
     return -1;
 }
 
-evaluation *program::build()
+evaluation *program::build() ///// what are we doing here ????
 {
-    return nullptr;
+    evaluation a = evaluation(exprs_);
+    return &a; ///// this is failing during make
+    // return nullptr; // this was the original line here
 }

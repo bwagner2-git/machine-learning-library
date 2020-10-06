@@ -4,7 +4,7 @@
 #include "expression.h"
 #include <vector> //////////added in
 
-class evaluation;
+class evaluation;    //// does this just import the class
 
 class program
 {
@@ -31,7 +31,7 @@ public:
         size_t shape[],
         double data[]);
 
-    evaluation *build();
+    evaluation *build();      //// what is the * for this means derefernece right? or not in this case
 }; // class program
 
 #endif // PROGRAM_H
