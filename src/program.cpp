@@ -15,11 +15,14 @@ void program::append_expression(
     exprs_.push_back(expression(expr_id, op_name, op_type, inputs, num_inputs));   //// we can just access exprs_ becuase it is a member function of program?   
 } //////////should I push to the front so that i can iterate through it in forward direction
 
-int program::add_op_param_double(
-    const char *key,
+int program::add_op_param_double(   ////////////////////////WORKS WITH LAST EXPRESSION APPENDED 
+    const char *key, /// this is called "value"    
     double value)
 {
-    return -1;
+    exprs_.back().add_op_param_double(key, value);
+    op_params_[key] = value; ///// Could I create a new expression of constant type and append this expression to the std vector of expressions
+    // return -1; /// why is this returning -1 ??? 
+    return 0;
 }
 
 int program::add_op_param_ndarray(

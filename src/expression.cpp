@@ -14,6 +14,7 @@ void expression::add_op_param_double(
     const char *key,
     double value)
 {
+    op_params_[key]= value;
 }
 
 void expression::add_op_param_ndarray(
@@ -41,4 +42,9 @@ int expression::get_num_inputs(){
 
 std::vector<int> expression::get_inputs(){
     return inputs_;
+}
+
+
+std::map<std::string, double> expression::get_op_params() {
+    return op_params_;
 }

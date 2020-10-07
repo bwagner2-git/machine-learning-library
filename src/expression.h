@@ -15,6 +15,7 @@ class expression
     std::string op_name_;
     std::string op_type_;
     std::vector<int> inputs_; /// these are other expression ids so they are ints
+    std::map<std::string, double> op_params_;
     /////////////////////////////
 public:
     expression(
@@ -39,6 +40,7 @@ public:
     int get_expr_id();
     int get_num_inputs();
     std::vector<int> get_inputs();
+    std::map<std::string, double> get_op_params();
 
 }; // class expression
 

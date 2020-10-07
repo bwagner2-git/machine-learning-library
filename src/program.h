@@ -9,6 +9,7 @@ class evaluation;    //// does this just import the class /// look into lecture 
 class program
 {
     std::vector<expression> exprs_;   ////added in
+    std::map<std::string, double> op_params_;
 public:
     program();
 

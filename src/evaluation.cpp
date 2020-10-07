@@ -33,18 +33,34 @@ int evaluation::execute()
             result_=kwargs_[expr.get_op_name()];///is this right?
         }
         else if (expr.get_op_type()=="Add"){
-            int total = 0;
+            double total = 0;
             for(int i =0; i<expr.get_num_inputs(); i++){
                 total += terms_[expr.get_inputs()[i]];    //////////// this should be right right? i should start at 0 because its iterating through expressions list of inputs?
             }
             terms_[expr.get_expr_id()]=total;
             result_=total;
         } else if (expr.get_op_type()=="Const"){
-            terms_[expr.get_expr_id()]= ;   ////////////////// figure out how to add in constants
+            terms_[expr.get_expr_id()]= expr.get_op_params()["value"];   // the value of the constant is always under key "value" in op_params_ the value is always set right after adding the constant expressions
+            //// what happens if i have more than one constant and the value gets overwritten
+            result_= expr.get_op_params()["value"];
+        } else if (expr.get_op_type()=="Sub") {
+            double total = 0;
+            double first = terms_[expr.get_inputs()[0]];
+            double second =terms_[expr.get_inputs()[1]];
+            total = first - second;                 ///////// MIGHT HAVE TO REVERSE ORDER!!!
+            terms_[expr.get_expr_id()]=total;
+            result_=total;
+        } else if (expr.get_op_type()=="Mul"){
+            double total = 0;
+            double first = terms_[expr.get_inputs()[0]];
+            double second =terms_[expr.get_inputs()[1]];
+            total = second * first;                 ///////// MIGHT HAVE TO REVERSE ORDER!!!
+            terms_[expr.get_expr_id()]=total; 
+            result_=total;
         }
         }
         return 0; ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
-
+        /// why do in some of the function i return a 0 and in the others i dont care ???
 }
 
 double &evaluation::get_result()
