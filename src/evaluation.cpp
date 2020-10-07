@@ -35,10 +35,12 @@ int evaluation::execute()
         else if (expr.get_op_type()=="Add"){
             int total = 0;
             for(int i =0; i<expr.get_num_inputs(); i++){
-                total += terms_[expr.get_inputs()[i]];
+                total += terms_[expr.get_inputs()[i]];    //////////// this should be right right? i should start at 0 because its iterating through expressions list of inputs?
             }
             terms_[expr.get_expr_id()]=total;
             result_=total;
+        } else if (expr.get_op_type()=="Const"){
+            terms_[expr.get_expr_id()]= ;   ////////////////// figure out how to add in constants
         }
         }
         return 0; ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?

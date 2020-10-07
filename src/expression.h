@@ -14,7 +14,7 @@ class expression
     int expr_id_; /////////////added in
     std::string op_name_;
     std::string op_type_;
-    std::vector<int> inputs_;
+    std::vector<int> inputs_; /// these are other expression ids so they are ints
     /////////////////////////////
 public:
     expression(
