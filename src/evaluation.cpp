@@ -35,7 +35,7 @@ int evaluation::execute()
         else if (expr.get_op_type()=="Add"){
             int total = 0;
             for(int i =0; i<expr.get_num_inputs(); i++){
-                total += expr.get_inputs()[i];
+                total += terms_[expr.get_inputs()[i]];
             }
             terms_[expr.get_expr_id()]=total;
             result_=total;

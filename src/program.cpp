@@ -33,7 +33,7 @@ int program::add_op_param_ndarray(
 
 evaluation *program::build() ///// what are we doing here ????
 {
-    evaluation a = evaluation(exprs_);
-    return &a; ///// this is failing during make
+    evaluation *eval = new evaluation(exprs_);
+    return eval; ///// this is failing during make
     // return nullptr; // this was the original line here
 }

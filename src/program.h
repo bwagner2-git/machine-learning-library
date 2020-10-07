@@ -4,7 +4,7 @@
 #include "expression.h"
 #include <vector> //////////added in
 
-class evaluation;    //// does this just import the class
+class evaluation;    //// does this just import the class /// look into lecture 6 and lecture 9 about what this does the builder pattern
 
 class program
 {
