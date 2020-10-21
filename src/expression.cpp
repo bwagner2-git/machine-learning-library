@@ -1,4 +1,5 @@
 #include "expression.h"
+#include "tensor.h"
 
 expression::expression(
     int expr_id,
@@ -14,7 +15,7 @@ void expression::add_op_param_double(
     const char *key,
     double value)
 {
-    op_params_[key]= value;
+    op_params_[key]= value;  /// should this be a tensor instead of a double? I would just use the ctor with the double v inside it right?
 }
 
 void expression::add_op_param_ndarray(
@@ -23,7 +24,12 @@ void expression::add_op_param_ndarray(
     size_t shape[],
     double data[])
 {
+    std::string k = key;
+   // std::vector<size_t> = shape[]; // is this what you mean when you say make copies
+                                        //// cant I just make a tensor with these values and store it with the key? Do I have to make copies before I do that?
+    op_params_[key]= tensor(dim, shape, data);
 }
+
 
 std::string expression::get_op_type(){
     return op_type_;
