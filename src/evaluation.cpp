@@ -47,14 +47,14 @@ int evaluation::execute()
             double total = 0;
             double first = terms_[expr.get_inputs()[0]];
             double second =terms_[expr.get_inputs()[1]];
-            total = first - second;                 ///////// MIGHT HAVE TO REVERSE ORDER!!!
+            total = first - second;                 
             terms_[expr.get_expr_id()]=total;
             result_=total;
         } else if (expr.get_op_type()=="Mul"){
             double total = 0;
             double first = terms_[expr.get_inputs()[0]];
             double second =terms_[expr.get_inputs()[1]];
-            total = second * first;                 ///////// MIGHT HAVE TO REVERSE ORDER!!!
+            total = second * first;                 
             terms_[expr.get_expr_id()]=total; 
             result_=total;
         }
@@ -63,7 +63,7 @@ int evaluation::execute()
         /// why do in some of the function i return a 0 and in the others i dont care ???
 }
 
-double &evaluation::get_result()
+tensor &evaluation::get_result()
 {
     return result_; // is the result always the last espression evaluated?
 }

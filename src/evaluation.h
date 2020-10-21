@@ -2,6 +2,7 @@
 #define EVALUATION_H
 
 #include "expression.h"
+#include "tensor.h"
 
 class evaluation
 {
@@ -25,10 +26,11 @@ public:
     int execute();
 
     // return the variable computed by the last expression
-    double &get_result();
+    tensor &get_result();
+
 
 private:
-    double result_;
+    tensor result_;    /// we should be returning a tensor now right?
 }; // class evaluation
 
 #endif // EVALUATION_H
