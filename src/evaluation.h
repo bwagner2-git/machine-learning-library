@@ -9,9 +9,9 @@ class evaluation
 public: 
     evaluation(const std::vector<expression> &exprs);  ///what does using & in construction mean?  why would i doit that way 
          //////// do i put a map in here too?
-    std::map<int, double> terms_;
+    std::map<int, tensor> terms_;
     std::vector<expression> exprs_;
-    std::map<std::string, double> kwargs_;
+    std::map<std::string, tensor> kwargs_;
     void add_kwargs_double(
         const char *key,     //// x=5 char is x 
         double value); //// value =5

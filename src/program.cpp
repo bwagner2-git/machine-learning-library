@@ -20,8 +20,8 @@ int program::add_op_param_double(   ////////////////////////WORKS WITH LAST EXPR
     double value)
 {
     exprs_.back().add_op_param_double(key, value);
-    op_params_[key] = value; ///// Could I create a new expression of constant type and append this expression to the std vector of expressions
-    // return -1; /// why is this returning -1 ??? 
+    op_params_[key] = value;// do i need to do this? ///// Could I create a new expression of constant type and append this expression to the std vector of expressions
+    // return -1; /// why is this returning -1 ???   
     return 0;
 }
 
@@ -31,7 +31,9 @@ int program::add_op_param_ndarray(
     size_t shape[],
     double data[])
 {
-    return -1;
+    exprs_.back().add_op_param_ndarray(key, dim, shape, data);
+    op_params_[key]= tensor(dim, shape, data);
+    return 0;
 }
 
 evaluation *program::build() ///// what are we doing here ????

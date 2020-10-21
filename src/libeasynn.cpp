@@ -95,9 +95,10 @@ int execute(
     int ret = eval->execute();
     if (ret != 0)
         return ret;
-    *p_dim = 0;
-    *p_shape = nullptr;
-    *p_data = &eval->get_result();
+    tensor &res = eval->get_result();
+    *p_dim = res.get_dim();
+    *p_shape = res.get_shape_array();
+    *p_data = res.get_data_array();
     fflush(stdout);
     return 0;
 }

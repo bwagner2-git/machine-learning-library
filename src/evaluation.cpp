@@ -22,6 +22,7 @@ void evaluation::add_kwargs_ndarray(
     size_t shape[],
     double data[])
 {
+    kwargs_[key]=tensor(dim, shape, data);
 }
 
 int evaluation::execute()
@@ -35,7 +36,7 @@ int evaluation::execute()
         else if (expr.get_op_type()=="Add"){
             double total = 0;
             for(int i =0; i<expr.get_num_inputs(); i++){
-                total += terms_[expr.get_inputs()[i]];    //////////// this should be right right? i should start at 0 because its iterating through expressions list of inputs?
+                total += terms_[expr.get_inputs()[i]].item();    //////////// this should be right right? i should start at 0 because its iterating through expressions list of inputs?
             }
             terms_[expr.get_expr_id()]=total;
             result_=total;
@@ -45,19 +46,21 @@ int evaluation::execute()
             result_= expr.get_op_params()["value"];
         } else if (expr.get_op_type()=="Sub") {
             double total = 0;
-            double first = terms_[expr.get_inputs()[0]];
-            double second =terms_[expr.get_inputs()[1]];
+            double first = terms_[expr.get_inputs()[0]].item();
+            double second =terms_[expr.get_inputs()[1]].item();
             total = first - second;                 
             terms_[expr.get_expr_id()]=total;
             result_=total;
         } else if (expr.get_op_type()=="Mul"){
             double total = 0;
-            double first = terms_[expr.get_inputs()[0]];
-            double second =terms_[expr.get_inputs()[1]];
+            double first = terms_[expr.get_inputs()[0]].item();
+            double second =terms_[expr.get_inputs()[1]].item();
             total = second * first;                 
             terms_[expr.get_expr_id()]=total; 
             result_=total;
         }
+
+
         }
         return 0; ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
         /// why do in some of the function i return a 0 and in the others i dont care ???

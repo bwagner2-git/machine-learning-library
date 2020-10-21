@@ -1,15 +1,16 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
-#include "expression.h"
+#include "expression.h"  /// what is the difference between this and below the class evaluation; ?
+#include "tensor.h"
 #include <vector> //////////added in
 
 class evaluation;    //// does this just import the class /// look into lecture 6 and lecture 9 about what this does the builder pattern
-
+///do i need to also do this with tensor 
 class program
 {
     std::vector<expression> exprs_;   ////added in
-    std::map<std::string, double> op_params_;
+    std::map<std::string, tensor> op_params_;
 public:
     program();
 

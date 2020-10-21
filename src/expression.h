@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "tensor.h"
 
 class evaluation;
 
@@ -15,7 +16,7 @@ class expression
     std::string op_name_;
     std::string op_type_;
     std::vector<int> inputs_; /// these are other expression ids so they are ints
-    std::map<std::string, double> op_params_;
+    std::map<std::string, tensor> op_params_;   // make this hold tensors?
     /////////////////////////////
 public:
     expression(
@@ -40,7 +41,7 @@ public:
     int get_expr_id();
     int get_num_inputs();
     std::vector<int> get_inputs();
-    std::map<std::string, double> get_op_params();
+    std::map<std::string, tensor> get_op_params();
 
 }; // class expression
 

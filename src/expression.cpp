@@ -15,7 +15,8 @@ void expression::add_op_param_double(
     const char *key,
     double value)
 {
-    op_params_[key]= value;  /// should this be a tensor instead of a double? I would just use the ctor with the double v inside it right?
+    tensor t = tensor(value);
+    op_params_[key]= t;  /// should this be a tensor instead of a double? I would just use the ctor with the double v inside it right?
 }
 
 void expression::add_op_param_ndarray(
@@ -51,6 +52,6 @@ std::vector<int> expression::get_inputs(){
 }
 
 
-std::map<std::string, double> expression::get_op_params() {
+std::map<std::string, tensor> expression::get_op_params() {
     return op_params_;
 }
