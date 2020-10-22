@@ -1,6 +1,5 @@
 #include <assert.h>
 #include "evaluation.h"
-#include <iostream> /// get rid of this after testing
 
 evaluation::evaluation(const std::vector<expression> &exprs)/// why is this the only constructor with things in these parentheses /// this is the consturctor like __init__ in python 
     : result_(0) ///what does this do here
@@ -86,7 +85,6 @@ int evaluation::execute()
                 result_=tensor(terms_[expr.get_inputs()[0]].item()*terms_[expr.get_inputs()[1]].item());
             } else if ((terms_[expr.get_inputs()[0]].get_dim()==0) && (terms_[expr.get_inputs()[1]].get_dim()!=0)) {
                 double dat[terms_[expr.get_inputs()[1]].get_data_vector().size()];
-                std::cout<<"problem below"<<std::endl;// delete line
                 for (size_t i = 0; i<terms_[expr.get_inputs()[1]].get_data_vector().size(); ++i){
                     double b = terms_[expr.get_inputs()[1]].get_data_vector()[i];
                     dat[i]=b*terms_[expr.get_inputs()[0]].item();
@@ -101,7 +99,6 @@ int evaluation::execute()
                 }
                 terms_[expr.get_expr_id()]=tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat); 
                 result_=tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat);
-                std::cout<<"got through"<<std::endl;// delete line
             } else {
                 size_t row = terms_[expr.get_inputs()[0]].get_shape_array()[0];
                 size_t col = terms_[expr.get_inputs()[1]].get_shape_array()[1];
