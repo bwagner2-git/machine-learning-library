@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "evaluation.h"
+#include <iostream> /// get rid of this after testing
 
 evaluation::evaluation(const std::vector<expression> &exprs)/// why is this the only constructor with things in these parentheses /// this is the consturctor like __init__ in python 
     : result_(0) ///what does this do here
@@ -84,7 +85,8 @@ int evaluation::execute()
                 terms_[expr.get_expr_id()]= tensor(terms_[expr.get_inputs()[0]].item()*terms_[expr.get_inputs()[1]].item());
                 result_=tensor(terms_[expr.get_inputs()[0]].item()*terms_[expr.get_inputs()[1]].item());
             } else if ((terms_[expr.get_inputs()[0]].get_dim()==0) && (terms_[expr.get_inputs()[1]].get_dim()!=0)) {
-                double dat[terms_[expr.get_inputs()[0]].get_data_vector().size()];
+                double dat[terms_[expr.get_inputs()[1]].get_data_vector().size()];
+                std::cout<<"problem below"<<std::endl;// delete line
                 for (size_t i = 0; i<terms_[expr.get_inputs()[1]].get_data_vector().size(); ++i){
                     double b = terms_[expr.get_inputs()[1]].get_data_vector()[i];
                     dat[i]=b*terms_[expr.get_inputs()[0]].item();
@@ -99,8 +101,28 @@ int evaluation::execute()
                 }
                 terms_[expr.get_expr_id()]=tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat); 
                 result_=tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat);
+                std::cout<<"got through"<<std::endl;// delete line
             } else {
-                result_= tensor();
+                size_t row = terms_[expr.get_inputs()[0]].get_shape_array()[0];
+                size_t col = terms_[expr.get_inputs()[1]].get_shape_array()[1];
+                size_t x = terms_[expr.get_inputs()[0]].get_shape_array()[1];  /// need to make array of size row * col to pass to tensor construtor later on
+                double dat[row*col];
+                tensor A = terms_[expr.get_inputs()[0]];
+                tensor B = terms_[expr.get_inputs()[1]];
+                for (size_t i = 0; i<row; ++i){
+                    for (size_t j = 0; j<col; ++j){
+                        double total = 0;
+                        for (size_t p = 0; p<x; ++p){
+                            total+= A.at(i,p)*B.at(p,j);                        /// A[i][x]*B[x][j]
+                        }
+                        dat[i*col+j] = total;
+                    }
+                }
+                // dim = 2
+                size_t shape[2]= {row,col};
+
+                terms_[expr.get_expr_id()]=tensor(2, shape, dat);
+                result_= tensor(2, shape, dat);
             }
 
 
