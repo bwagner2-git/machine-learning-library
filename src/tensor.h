@@ -15,7 +15,7 @@ class tensor {
 
         size_t *get_shape_array();
         double *get_data_array();
-        
+        std::vector<double> get_data_vector();
 
 
     private:

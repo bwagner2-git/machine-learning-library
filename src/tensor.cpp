@@ -51,7 +51,13 @@ size_t *tensor::get_shape_array() {
 }
 
 double *tensor::get_data_array(){
-    return &data_[0];
+    return &data_[0];  // can we not point to the whole tensor object, why do we point to just the first element instead? 
+}
+
+std::vector<double> tensor::get_data_vector(){ /// does this defeat the purpose of keeping data vector private? why does it need to private to begin with?
+    std::vector<double> copy(data_);
+
+    return copy;
 }
 
 

@@ -28,29 +28,55 @@ void evaluation::add_kwargs_ndarray(
 int evaluation::execute()
 {
     terms_.clear();
-    for(auto &expr: exprs_) {  /// for in loop
+    for(auto &expr: exprs_) {  /// for in loop!
         if (expr.get_op_type()=="Input"){
-            terms_[expr.get_expr_id()]=kwargs_[expr.get_op_name()];
+            terms_[expr.get_expr_id()]=kwargs_[expr.get_op_name()]; // make sure only tensors are stored in terms
             result_=kwargs_[expr.get_op_name()];///is this right?
         }
         else if (expr.get_op_type()=="Add"){
-            double total = 0;
-            for(int i =0; i<expr.get_num_inputs(); i++){
-                total += terms_[expr.get_inputs()[i]].item();    //////////// this should be right right? i should start at 0 because its iterating through expressions list of inputs?
+            int dim = terms_[expr.get_inputs()[0]].get_dim();
+            if (dim==0){
+                double total = 0;
+                for(int i =0; i<expr.get_num_inputs(); i++){
+                    assert(terms_[expr.get_inputs()[i]].get_dim()==0);
+                    total += terms_[expr.get_inputs()[i]].item();    //////////// this should be right right? i should start at 0 because its iterating through expressions list of inputs?
+                }
+                terms_[expr.get_expr_id()]=tensor(total);
+                result_=tensor(total);
+            } else {
+                double dat[terms_[expr.get_inputs()[0]].get_data_vector().size()];
+                // std::vector<double> dat;
+                for (size_t i = 0; i<terms_[expr.get_inputs()[0]].get_data_vector().size(); ++i){
+                    double a = terms_[expr.get_inputs()[0]].get_data_vector()[i];
+                    double b = terms_[expr.get_inputs()[1]].get_data_vector()[i];
+                    // dat.push_back(a+b);
+                    dat[i]=a+b;
+                } 
+                result_=tensor(dim, terms_[expr.get_inputs()[0]].get_shape_array(), dat);       
             }
-            terms_[expr.get_expr_id()]=total;
-            result_=total;
+           
         } else if (expr.get_op_type()=="Const"){
             terms_[expr.get_expr_id()]= expr.get_op_params()["value"];   // the value of the constant is always under key "value" in op_params_ the value is always set right after adding the constant expressions
             //// what happens if i have more than one constant and the value gets overwritten
             result_= expr.get_op_params()["value"];
         } else if (expr.get_op_type()=="Sub") {
-            double total = 0;
-            double first = terms_[expr.get_inputs()[0]].item();
-            double second =terms_[expr.get_inputs()[1]].item();
-            total = first - second;                 
-            terms_[expr.get_expr_id()]=total;
-            result_=total;
+            int dim = terms_[expr.get_inputs()[0]].get_dim();
+            if (dim==0){
+                double total = 0;
+                total = terms_[expr.get_inputs()[0]].item()-terms_[expr.get_inputs()[1]].item();
+                terms_[expr.get_expr_id()]=total;
+                result_=tensor(total);
+            } else {
+                double dat[terms_[expr.get_inputs()[0]].get_data_vector().size()];
+                // std::vector<double> dat;
+                for (size_t i = 0; i<terms_[expr.get_inputs()[0]].get_data_vector().size(); ++i){
+                    double a = terms_[expr.get_inputs()[0]].get_data_vector()[i];
+                    double b = terms_[expr.get_inputs()[1]].get_data_vector()[i];
+                    // dat.push_back(a+b);
+                    dat[i]=a-b;
+                } 
+                result_=tensor(dim, terms_[expr.get_inputs()[0]].get_shape_array(), dat);       
+            }
         } else if (expr.get_op_type()=="Mul"){
             double total = 0;
             double first = terms_[expr.get_inputs()[0]].item();
