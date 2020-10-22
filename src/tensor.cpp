@@ -47,7 +47,7 @@ double tensor::at(size_t i, size_t j) const { //  access for 2d tensors
 }
 
 size_t *tensor::get_shape_array() {
-    return shape_.empty()? nullptr: &shape_[0];
+    return shape_.empty()? nullptr: &shape_[0]; // might need to derefernce shape array later on when this function is called?
 }
 
 double *tensor::get_data_array(){

@@ -52,6 +52,7 @@ int evaluation::execute()
                     // dat.push_back(a+b);
                     dat[i]=a+b;
                 } 
+                terms_[expr.get_expr_id()]= tensor(dim, terms_[expr.get_inputs()[0]].get_shape_array(), dat); 
                 result_=tensor(dim, terms_[expr.get_inputs()[0]].get_shape_array(), dat);       
             }
            
@@ -64,7 +65,7 @@ int evaluation::execute()
             if (dim==0){
                 double total = 0;
                 total = terms_[expr.get_inputs()[0]].item()-terms_[expr.get_inputs()[1]].item();
-                terms_[expr.get_expr_id()]=total;
+                terms_[expr.get_expr_id()]=tensor(total);
                 result_=tensor(total);
             } else {
                 double dat[terms_[expr.get_inputs()[0]].get_data_vector().size()];
@@ -74,22 +75,40 @@ int evaluation::execute()
                     double b = terms_[expr.get_inputs()[1]].get_data_vector()[i];
                     // dat.push_back(a+b);
                     dat[i]=a-b;
-                } 
+                }
+                terms_[expr.get_expr_id()]=tensor(dim, terms_[expr.get_inputs()[0]].get_shape_array(), dat);
                 result_=tensor(dim, terms_[expr.get_inputs()[0]].get_shape_array(), dat);       
             }
         } else if (expr.get_op_type()=="Mul"){
-            double total = 0;
-            double first = terms_[expr.get_inputs()[0]].item();
-            double second =terms_[expr.get_inputs()[1]].item();
-            total = second * first;                 
-            terms_[expr.get_expr_id()]=total; 
-            result_=total;
-        }
+            if ((terms_[expr.get_inputs()[0]].get_dim()==0) && (terms_[expr.get_inputs()[1]].get_dim()==0)){
+                terms_[expr.get_expr_id()]= tensor(terms_[expr.get_inputs()[0]].item()*terms_[expr.get_inputs()[1]].item());
+                result_=tensor(terms_[expr.get_inputs()[0]].item()*terms_[expr.get_inputs()[1]].item());
+            } else if ((terms_[expr.get_inputs()[0]].get_dim()==0) && (terms_[expr.get_inputs()[1]].get_dim()!=0)) {
+                double dat[terms_[expr.get_inputs()[0]].get_data_vector().size()];
+                for (size_t i = 0; i<terms_[expr.get_inputs()[1]].get_data_vector().size(); ++i){
+                    double b = terms_[expr.get_inputs()[1]].get_data_vector()[i];
+                    dat[i]=b*terms_[expr.get_inputs()[0]].item();
+                }
+                terms_[expr.get_expr_id()]=tensor(terms_[expr.get_inputs()[1]].get_dim(),terms_[expr.get_inputs()[1]].get_shape_array(),dat); 
+                result_=tensor(terms_[expr.get_inputs()[1]].get_dim(),terms_[expr.get_inputs()[1]].get_shape_array(),dat);  ////////////////make sure all the ones and zeros line up with what they should be on this one and below
+            } else if ((terms_[expr.get_inputs()[0]].get_dim()!=0) && (terms_[expr.get_inputs()[1]].get_dim()==0)) {
+                double dat[terms_[expr.get_inputs()[0]].get_data_vector().size()];
+                for (size_t i = 0; i<terms_[expr.get_inputs()[0]].get_data_vector().size(); ++i){
+                    double b = terms_[expr.get_inputs()[0]].get_data_vector()[i];
+                    dat[i]=b*terms_[expr.get_inputs()[1]].item();
+                }
+                terms_[expr.get_expr_id()]=tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat); 
+                result_=tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat);
+            } else {
+                result_= tensor();
+            }
 
 
         }
-        return 0; ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
+         ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
         /// why do in some of the function i return a 0 and in the others i dont care ???
+    }
+    return 0;
 }
 
 tensor &evaluation::get_result()

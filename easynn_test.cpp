@@ -42,10 +42,13 @@ int main()
 
 
     int inputs1[] = {0, 0}; /// i believe that these are the expr_ids of the expressions to be added!!!  /// can inputs be constant value?
-    append_expression(prog, 1, "", "Add", inputs1, 2);
+    append_expression(prog, 1, "", "Mul", inputs1, 2);
+    append_expression(prog, 2, "y", "Input", inputs0, 0);
 
     evaluation *eval = build(prog);    /// eval is a pointer
     add_kwargs_double(eval, "x", 25.5);   // telling it what a equals go throgh and look for a and then you know thats a 5
+    double c[2] = {1,2};
+    add_kwargs_double(eval, "y", *c); 
 
     int dim = 0;
     size_t *shape = nullptr;               

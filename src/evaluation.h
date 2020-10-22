@@ -31,6 +31,7 @@ public:
 
 private:
     tensor result_;    /// we should be returning a tensor now right?
+    
 }; // class evaluation
 
 #endif // EVALUATION_H
