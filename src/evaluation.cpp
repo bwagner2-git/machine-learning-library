@@ -123,9 +123,34 @@ int evaluation::execute()
             }
 
 
+        } else if (expr.get_op_type()=="ReLU") {
+            std::vector<double> a=terms_[expr.get_inputs()[0]].get_data_vector();
+            double dat[a.size()];
+            for (size_t i =0; i<a.size(); i++){
+                if (a[i]<0){
+                    dat[i]=0;
+                }else {
+                    dat[i]=terms_[expr.get_inputs()[0]].get_data_vector()[i];
+                }
+            }
+            result_ = tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat);
+
+        } else if (expr.get_op_type()=="Flatten") {
+            // works
+            // size_t next = terms_[expr.get_inputs()[0]].get_dim();
+            // size_t shape[]={1, next};
+            // result_ = tensor(1,shape,terms_[expr.get_inputs()[0]].get_data_array());
+            // works
+            size_t first = terms_[expr.get_inputs()[0]].get_shape_array()[0];
+            size_t second = terms_[expr.get_inputs()[0]].get_shape_array()[1]*terms_[expr.get_inputs()[0]].get_shape_array()[2]*terms_[expr.get_inputs()[0]].get_shape_array()[3];
+            size_t sha[]={first,second};
+            result_ = tensor(2,sha,terms_[expr.get_inputs()[0]].get_data_array());
+
         }
+
          ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
         /// why do in some of the function i return a 0 and in the others i dont care ???
+
     }
     return 0;
 }
