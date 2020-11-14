@@ -136,16 +136,25 @@ int evaluation::execute()
             result_ = tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat);
 
         } else if (expr.get_op_type()=="Flatten") {
-            // works
-            // size_t next = terms_[expr.get_inputs()[0]].get_dim();
-            // size_t shape[]={1, next};
-            // result_ = tensor(1,shape,terms_[expr.get_inputs()[0]].get_data_array());
-            // works
             size_t first = terms_[expr.get_inputs()[0]].get_shape_array()[0];
             size_t second = terms_[expr.get_inputs()[0]].get_shape_array()[1]*terms_[expr.get_inputs()[0]].get_shape_array()[2]*terms_[expr.get_inputs()[0]].get_shape_array()[3];
             size_t sha[]={first,second};
             result_ = tensor(2,sha,terms_[expr.get_inputs()[0]].get_data_array());
 
+        } else if (expr.get_op_type()=="Input2D"){
+            tensor a = kwargs_[expr.get_op_name()];
+            double dat[a.get_data_vector().size()]; /// b will 1D right? just a contiguous row major order representation of a 2d right?
+            size_t N = terms_[expr.get_inputs()[0]].get_shape_array()[0];
+            size_t H = terms_[expr.get_inputs()[0]].get_shape_array()[1];
+            size_t W = terms_[expr.get_inputs()[0]].get_shape_array()[2];
+            size_t C = terms_[expr.get_inputs()[0]].get_shape_array()[3];
+
+            for (size_t i =0; i<N; ++i){ // match up the Ns
+                dat[i]= a.at(i,0);    
+            }
+            for 
+
+            terms_[expr.get_expr_id()]  ; // make sure only tensors are stored in terms
         }
 
          ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
