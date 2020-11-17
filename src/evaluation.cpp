@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "evaluation.h"
+#include <iostream>
 
 evaluation::evaluation(const std::vector<expression> &exprs)/// why is this the only constructor with things in these parentheses /// this is the consturctor like __init__ in python 
     : result_(0) ///what does this do here
@@ -141,18 +142,20 @@ int evaluation::execute()
             size_t sha[]={first,second};
             result_ = tensor(2,sha,terms_[expr.get_inputs()[0]].get_data_array());
 
-        } else if (expr.get_op_type()=="Input2D"){
+        } else if (expr.get_op_type()=="Input2d"){
             tensor a = kwargs_[expr.get_op_name()];
             size_t N = a.get_shape_array()[0];
             size_t H = a.get_shape_array()[1];
             size_t W = a.get_shape_array()[2];
             size_t C = a.get_shape_array()[3];
-            double dat [N*C*H*W];
+            double dat[N*C*H*W];
             for (size_t n = 0; n< N; n++){
                 for (size_t h =0; h<H; h++){
                     for (size_t w = 0; w<W; w++){
                         for (size_t c =0; c<C; c++){
-                            dat[n*W*H*C + c*W*H + h*W + w] = a.at(N,H,W,C);
+                            // std::cout<< a.get_shape_array()[0] <<' '<< H << ' ' << W << ' ' << C << std::endl;
+                            // std::cout<< n <<' '<< h << ' ' << w << ' ' << c << std::endl;
+                            dat[n*W*H*C + c*W*H + h*W + w] = a.at(n,h,w,c);                            
                         }
                     }
                 }
