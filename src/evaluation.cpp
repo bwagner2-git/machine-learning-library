@@ -1,6 +1,8 @@
 #include <assert.h>
 #include "evaluation.h"
+#include <vector>
 #include <iostream>
+
 
 evaluation::evaluation(const std::vector<expression> &exprs)/// why is this the only constructor with things in these parentheses /// this is the consturctor like __init__ in python 
     : result_(0) ///what does this do here
@@ -170,17 +172,30 @@ int evaluation::execute()
             size_t N = x.get_shape_array()[0];  
             size_t O = weight.get_shape_array()[0];  
             size_t I = x.get_shape_array()[1];
-            
-            double dat[N*O];
-            double total;
-            std::cout<< "here"<< std::endl;
-           
 
+            std::vector<double> trans_vec;
+            for (size_t j = 0; j<I; j++){
+                for (size_t i =0; i<N; i++){            ///////////////transpose the input array using vector
+                    trans_vec.push_back(x.at(i,j));
+                }
+            }
+
+            double xt[trans_vec.size()];
+            for (size_t i =0; i<trans_vec.size(); i++){
+                xt[i]=trans_vec[i];                         //////////// put the vecotr into array format so it can be input into temp tensor for mat mul
+            }
+            
+            std::cout<< "here"<< std::endl;
+            size_t d[2]= {I,N};
+            tensor tmp =tensor(2,d, xt); ///tmp is the matrix with transposed input so i can use at in multiplication below
+
+            double total;
+            double dat[N*O];
             for (size_t i = 0; i<O; ++i){                
                 for (size_t j = 0; j<N; ++j){
                     total = 0;
                     for (size_t p = 0; p<I; ++p){
-                        total+= weight.at(i,p)*x.at(p,j);    ///flipped becaue times x transpose START HERE ON DEBUG                    /// A[i][x]*B[x][j]
+                        total+= weight.at(i,p)*tmp.at(p,j);                  /// A[i][x]*B[x][j]
                     }
                     dat[i*N+j] = total;
                 }
@@ -191,15 +206,24 @@ int evaluation::execute()
                     dat[q*N + m] = dat[q*N + m] + bias.get_data_array()[q];
                 }
             }
-            double realdat[N*O];
-            for (size_t q = 0; q<O; ++q){
-                for (size_t m = 0; m<N; ++m){
-                    realdat[m*N + q] = dat[q*N + m]; ///// transpose dedug here
+            std::vector<double> tmp_vec;
+            size_t shatwo[2] = {O,N};
+            tensor tmp_tens = tensor(2,shatwo, dat);
+            for (size_t j =0; j<N; j++){
+                for (size_t i =0; i<O; i++){
+                    tmp_vec.push_back(tmp_tens.at(i,j));
                 }
             }
+
             
-            size_t sha[2] = {N,O};
-            result_= tensor(2, sha, realdat);
+            
+            double finaldat[N*O];
+            for (size_t i =0; i<tmp_vec.size(); i++){
+                finaldat[i]=tmp_vec[i];                         //////////// put the vecotr into array format so it can be input into temp tensor for mat mul
+            }
+            
+            size_t shathree[2] = {N,O};
+            result_= tensor(2, shathree, finaldat);
             terms_[expr.get_expr_id()]= result_;
         }
 
