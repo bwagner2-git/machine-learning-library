@@ -143,18 +143,23 @@ int evaluation::execute()
 
         } else if (expr.get_op_type()=="Input2D"){
             tensor a = kwargs_[expr.get_op_name()];
-            double dat[a.get_data_vector().size()]; /// b will 1D right? just a contiguous row major order representation of a 2d right?
-            size_t N = terms_[expr.get_inputs()[0]].get_shape_array()[0];
-            size_t H = terms_[expr.get_inputs()[0]].get_shape_array()[1];
-            size_t W = terms_[expr.get_inputs()[0]].get_shape_array()[2];
-            size_t C = terms_[expr.get_inputs()[0]].get_shape_array()[3];
-
-            for (size_t i =0; i<N; ++i){ // match up the Ns
-                dat[i]= a.at(i,0);    
-            }
-            for 
-
-            terms_[expr.get_expr_id()]  ; // make sure only tensors are stored in terms
+            size_t N = a.get_shape_array()[0];
+            size_t H = a.get_shape_array()[1];
+            size_t W = a.get_shape_array()[2];
+            size_t C = a.get_shape_array()[3];
+            double dat [N*C*H*W];
+            for (size_t n = 0; n< N; n++){
+                for (size_t h =0; h<H; h++){
+                    for (size_t w = 0; w<W; w++){
+                        for (size_t c =0; c<C; c++){
+                            dat[n*W*H*C + c*W*H + h*W + w] = a.at(N,H,W,C);
+                        }
+                    }
+                }
+            } 
+            size_t sha[] = {N, C, H, W}; 
+            result_ = tensor(4, sha, dat);
+            terms_[expr.get_expr_id()] = result_;
         }
 
          ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?

@@ -11,6 +11,7 @@ class tensor {
         double &item();
         double at(size_t i) const;
         double at(size_t i, size_t j) const;
+        double at(size_t n, size_t h, size_t w, size_t c) const;
         int get_dim() const;
 
         size_t *get_shape_array();

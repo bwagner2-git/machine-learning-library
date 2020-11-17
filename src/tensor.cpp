@@ -46,6 +46,12 @@ double tensor::at(size_t i, size_t j) const { //  access for 2d tensors
     return data_[i*shape_[1]+j];
 }
 
+double tensor::at(size_t n, size_t h, size_t w, size_t c) const { //  access for 4d tensors 
+    assert(shape_.size()==4);
+    assert((n<shape_[0]) && (h<shape_[1]) && (w<shape_[2]) && (c<shape_[3]));
+    return data_[n*shape_[3]*shape_[2]*shape_[1]+h*shape_[2]*shape_[3]+w*shape_[3]+c];
+}
+
 size_t *tensor::get_shape_array() {
     return shape_.empty()? nullptr: &shape_[0]; // might need to derefernce shape array later on when this function is called?
 }
