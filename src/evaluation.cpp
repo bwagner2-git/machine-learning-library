@@ -163,6 +163,44 @@ int evaluation::execute()
             size_t sha[] = {N, C, H, W}; 
             result_ = tensor(4, sha, dat);
             terms_[expr.get_expr_id()] = result_;
+        } else if (expr.get_op_type()=="Linear"){
+            tensor bias =expr.get_op_params()["bias"];
+            tensor weight =expr.get_op_params()["weight"];
+            tensor x = terms_[expr.get_inputs()[0]];
+            size_t N = x.get_shape_array()[0];  
+            size_t O = weight.get_shape_array()[0];  
+            size_t I = x.get_shape_array()[1];
+            
+            double dat[N*O];
+            double total;
+            std::cout<< "here"<< std::endl;
+           
+
+            for (size_t i = 0; i<O; ++i){                
+                for (size_t j = 0; j<N; ++j){
+                    total = 0;
+                    for (size_t p = 0; p<I; ++p){
+                        total+= weight.at(i,p)*x.at(p,j);    ///flipped becaue times x transpose START HERE ON DEBUG                    /// A[i][x]*B[x][j]
+                    }
+                    dat[i*N+j] = total;
+                }
+            }
+            std::cout<< "here"<< std::endl;
+            for (size_t q = 0; q<O; ++q){ ///// DOES SAME BIAS COLUMN VECTOR GET ADDED TO EVERY COLUMN?!?!?!?!?!
+                for (size_t m = 0; m<N; ++m){
+                    dat[q*N + m] = dat[q*N + m] + bias.get_data_array()[q];
+                }
+            }
+            double realdat[N*O];
+            for (size_t q = 0; q<O; ++q){
+                for (size_t m = 0; m<N; ++m){
+                    realdat[m*N + q] = dat[q*N + m]; ///// transpose dedug here
+                }
+            }
+            
+            size_t sha[2] = {N,O};
+            result_= tensor(2, sha, realdat);
+            terms_[expr.get_expr_id()]= result_;
         }
 
          ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
