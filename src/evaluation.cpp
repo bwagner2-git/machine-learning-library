@@ -185,7 +185,7 @@ int evaluation::execute()
                 xt[i]=trans_vec[i];                         //////////// put the vecotr into array format so it can be input into temp tensor for mat mul
             }
             
-            std::cout<< "here"<< std::endl;
+            //std::cout<< "here"<< std::endl;
             size_t d[2]= {I,N};
             tensor tmp =tensor(2,d, xt); ///tmp is the matrix with transposed input so i can use at in multiplication below
 
@@ -200,7 +200,7 @@ int evaluation::execute()
                     dat[i*N+j] = total;
                 }
             }
-            std::cout<< "here"<< std::endl;
+            //std::cout<< "here"<< std::endl;
             for (size_t q = 0; q<O; ++q){ ///// DOES SAME BIAS COLUMN VECTOR GET ADDED TO EVERY COLUMN?!?!?!?!?!
                 for (size_t m = 0; m<N; ++m){
                     dat[q*N + m] = dat[q*N + m] + bias.get_data_array()[q];
@@ -225,6 +225,54 @@ int evaluation::execute()
             size_t shathree[2] = {N,O};
             result_= tensor(2, shathree, finaldat);
             terms_[expr.get_expr_id()]= result_;
+        } else if (expr.get_op_type()=="Conv2d"){
+            tensor bias =expr.get_op_params()["bias"];
+            tensor weight =expr.get_op_params()["weight"];
+            tensor ks =expr.get_op_params()["kernel_size"];
+            size_t out_c = weight.get_shape_array()[0];
+            size_t in_c = weight.get_shape_array()[1];
+            size_t kernel_size = ks.item();
+            size_t N = terms_[expr.get_inputs()[0]].get_shape_array()[0];
+            size_t H = terms_[expr.get_inputs()[0]].get_shape_array()[2];
+            size_t W = terms_[expr.get_inputs()[0]].get_shape_array()[3];
+            tensor a = terms_[expr.get_inputs()[0]];
+                                                  ////////// is it a bad implementation time wise to the use std vector and then copy that to data array
+                                                  /// why couldnt we have just used standard vectors to hold data in tensors from the beginning
+                                                  /// is it so it can go to c and then from there to python?
+            double total = 0;
+            std::vector<double> tot;
+            for (size_t samp = 0; samp<N; samp++){
+                for (size_t out = 0; out< out_c; out++){
+                        //going to loop twice more based on kernel size and on height wand width of the input matrix
+                        // looking 2d input tensor a.at(N, in_, i, j) and weight.at(out, in_, p, q) the in_s should match right?
+                    
+                    for (size_t i = 0; i < H-kernel_size+1; i++){
+                        for (size_t j =0; j< W -kernel_size+1; j++){
+                            tot.push_back(total+bias.get_data_vector()[out]);////check this
+                            total=0;
+                            for (size_t p =0; p<kernel_size; p++){
+                                for (size_t q =0; q<kernel_size; q++){
+                                    for (size_t in_ =0; in_<in_c; in_++){
+                                        total += a.at(samp, in_, i+p, q+q)*weight.at(out, in_, p, q);
+                                    }
+                                }
+                            }                                
+                        }                  
+                    }
+                }
+            }/// add the bias!!!
+            std::cout<<tot.size()<<std::endl;
+            double data_array[tot.size()];
+            for (size_t i=0; i<tot.size(); i++){
+                data_array[i]=tot[i];
+            }
+
+            size_t sha[4] = {N, out_c, H-kernel_size+1, W-kernel_size+1 };
+            
+            result_= tensor(4, sha, data_array);
+            terms_[expr.get_expr_id()]= result_;
+            std::cout<< "here" << std::endl;
+            
         }
 
          ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
