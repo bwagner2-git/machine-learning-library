@@ -137,12 +137,14 @@ int evaluation::execute()
                 }
             }
             result_ = tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat);
+            terms_[expr.get_expr_id()] = result_;
 
         } else if (expr.get_op_type()=="Flatten") {
             size_t first = terms_[expr.get_inputs()[0]].get_shape_array()[0];
             size_t second = terms_[expr.get_inputs()[0]].get_shape_array()[1]*terms_[expr.get_inputs()[0]].get_shape_array()[2]*terms_[expr.get_inputs()[0]].get_shape_array()[3];
             size_t sha[]={first,second};
             result_ = tensor(2,sha,terms_[expr.get_inputs()[0]].get_data_array());
+            terms_[expr.get_expr_id()] = result_;
 
         } else if (expr.get_op_type()=="Input2d"){
             tensor a = kwargs_[expr.get_op_name()];
@@ -241,7 +243,7 @@ int evaluation::execute()
                                                   /// is it so it can go to c and then from there to python?
             double total = 0;
             std::vector<double> tot;
-            for (size_t samp = 0; samp<N; samp++){
+            for (size_t n = 0; n<N; n++){
                 for (size_t out = 0; out< out_c; out++){
                         //going to loop twice more based on kernel size and on height wand width of the input matrix
                         // looking 2d input tensor a.at(N, in_, i, j) and weight.at(out, in_, p, q) the in_s should match right?
@@ -253,7 +255,7 @@ int evaluation::execute()
                             for (size_t p =0; p<kernel_size; p++){
                                 for (size_t q =0; q<kernel_size; q++){
                                     for (size_t in_ =0; in_<in_c; in_++){
-                                        total += a.at(samp, in_, i+p, q+q)*weight.at(out, in_, p, q);
+                                        total += a.at(n, in_, i+p, q+q)*weight.at(out, in_, p, q);
                                     }
                                 }
                             }                                
@@ -271,8 +273,7 @@ int evaluation::execute()
             
             result_= tensor(4, sha, data_array);
             terms_[expr.get_expr_id()]= result_;
-            std::cout<< "here" << std::endl;
-            
+
         }  else if (expr.get_op_type()=="MaxPool2d"){
             tensor a = terms_[expr.get_inputs()[0]];
             size_t N = a.get_shape_array()[0];
