@@ -250,7 +250,7 @@ int evaluation::execute()
                     
                     for (size_t i = 0; i < H-kernel_size+1; i++){
                         for (size_t j =0; j< W -kernel_size+1; j++){
-                            tot.push_back(total+bias.get_data_vector()[out]);////check this
+                            tot.push_back(total+bias.at(out));////check this
                             total=0;
                             for (size_t p =0; p<kernel_size; p++){
                                 for (size_t q =0; q<kernel_size; q++){
