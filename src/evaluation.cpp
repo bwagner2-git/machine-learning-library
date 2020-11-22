@@ -250,15 +250,15 @@ int evaluation::execute()
                     
                     for (size_t i = 0; i < H-kernel_size+1; i++){
                         for (size_t j =0; j< W -kernel_size+1; j++){
-                            tot.push_back(total+bias.at(out));////check this
                             total=0;
                             for (size_t p =0; p<kernel_size; p++){
                                 for (size_t q =0; q<kernel_size; q++){
                                     for (size_t in_ =0; in_<in_c; in_++){
-                                        total += a.at(n, in_, i+p, q+q)*weight.at(out, in_, p, q);
+                                        total += a.at(n, in_, i+p, j+q)*weight.at(out, in_, p, q);
                                     }
                                 }
-                            }                                
+                            } 
+                            tot.push_back(total+bias.get_data_array()[out]);////check this                               
                         }                  
                     }
                 }
