@@ -138,6 +138,7 @@ int evaluation::execute()
             }
             result_ = tensor(terms_[expr.get_inputs()[0]].get_dim(),terms_[expr.get_inputs()[0]].get_shape_array(),dat);
             terms_[expr.get_expr_id()] = result_;
+            std::cout<<"relu"<<std::endl;
 
         } else if (expr.get_op_type()=="Flatten") {
             size_t first = terms_[expr.get_inputs()[0]].get_shape_array()[0];
@@ -145,6 +146,7 @@ int evaluation::execute()
             size_t sha[]={first,second};
             result_ = tensor(2,sha,terms_[expr.get_inputs()[0]].get_data_array());
             terms_[expr.get_expr_id()] = result_;
+            std::cout<<"flatten"<<std::endl;
 
         } else if (expr.get_op_type()=="Input2d"){
             tensor a = kwargs_[expr.get_op_name()];
@@ -167,6 +169,7 @@ int evaluation::execute()
             size_t sha[] = {N, C, H, W}; 
             result_ = tensor(4, sha, dat);
             terms_[expr.get_expr_id()] = result_;
+            std::cout<<"input2d"<<std::endl;
         } else if (expr.get_op_type()=="Linear"){
             tensor bias =expr.get_op_params()["bias"];
             tensor weight =expr.get_op_params()["weight"];
@@ -227,6 +230,7 @@ int evaluation::execute()
             size_t shathree[2] = {N,O};
             result_= tensor(2, shathree, finaldat);
             terms_[expr.get_expr_id()]= result_;
+            std::cout<<"linear"<<std::endl;
         } else if (expr.get_op_type()=="Conv2d"){
             tensor bias =expr.get_op_params()["bias"];
             tensor weight =expr.get_op_params()["weight"];
@@ -273,6 +277,7 @@ int evaluation::execute()
             
             result_= tensor(4, sha, data_array);
             terms_[expr.get_expr_id()]= result_;
+            std::cout<<"conv"<<std::endl;
 
         }  else if (expr.get_op_type()=="MaxPool2d"){
             tensor a = terms_[expr.get_inputs()[0]];
@@ -309,6 +314,7 @@ int evaluation::execute()
             
             result_ = tensor(4,sha, res_data);
             terms_[expr.get_expr_id()] = result_;
+            std::cout<<"maxpool"<<std::endl;
         }
 
          ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
