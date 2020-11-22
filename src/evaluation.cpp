@@ -273,6 +273,41 @@ int evaluation::execute()
             terms_[expr.get_expr_id()]= result_;
             std::cout<< "here" << std::endl;
             
+        }  else if (expr.get_op_type()=="MaxPool2d"){
+            tensor a = terms_[expr.get_inputs()[0]];
+            size_t N = a.get_shape_array()[0];
+            size_t C = a.get_shape_array()[1];
+            size_t H = a.get_shape_array()[2];
+            size_t W = a.get_shape_array()[3];
+            tensor ks =expr.get_op_params()["kernel_size"];
+            size_t kernel_size = ks.item();
+            double max;
+            std::vector<double> res_vec;
+            for (size_t n =0; n<N; n++){
+                for (size_t c =0; c<C; c++){
+                    for (size_t row =0; row<H; row=row+kernel_size){
+                        for (size_t col =0; col<W; col=col+kernel_size){
+                            max= a.at(n,c,row,col);/// initialize max
+                            for (size_t i = 0; i<kernel_size; i++){
+                                for (size_t j =0; j<kernel_size; j++){
+                                    if (a.at(n,c,i+row,j+col)>max){
+                                        max=a.at(n,c,i+row,j+col);
+                                    }
+                                }
+                            }
+                            res_vec.push_back(max);
+                        }
+                    }
+                }
+            }
+            size_t sha[4] = {N,C, H/kernel_size, W/kernel_size};
+            double res_data[res_vec.size()];
+            for (size_t i =0; i<res_vec.size(); i++){
+                res_data[i]=res_vec[i];
+            }
+            
+            result_ = tensor(4,sha, res_data);
+            terms_[expr.get_expr_id()] = result_;
         }
 
          ///// is this where I return 0 for no errors, what other integer should I return shoulnt integer be returned in get_result below?
