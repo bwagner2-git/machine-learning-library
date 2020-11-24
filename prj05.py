@@ -13,7 +13,7 @@ def save_theta(theta):
     })
 
 
-# initialize theta using uniform distribution [-bound, bound]
+# initialize theta using uniform distribution [-bound, bound]          
 # return theta as (f1_W, f1_b, f2_W, f2_b)
 def initialize_theta(bound):
     f1_W = np.random.uniform(-bound, bound, (32, 784))
@@ -40,9 +40,9 @@ def forward(images, theta):
     x = images.astype(float).transpose(0,3,1,2).reshape((N, -1))
 
     # g = Linear_f1(x)
-    g = np.zeros((N, f1_b.shape[0]))
+    g = np.zeros((N, f1_b.shape[0]))             #x is the input of images think of it as tensors?
     for i in range(N):
-        g[i, :] = np.matmul(f1_W, x[i])+f1_b
+        g[i, :] = np.matmul(f1_W, x[i])+f1_b     ###think of x g h and z as tensors? 
 
     # h = ReLU(g)
     h = g*(g > 0)
@@ -58,7 +58,7 @@ def forward(images, theta):
 # backprop:
 #   J = cross entropy between labels and softmax(z)
 # return nabla_J
-def backprop(labels, theta, z, h, g, x):
+def backprop(labels, theta, z, h, g, x):      ###what are these
     # number of samples
     N = labels.shape[0]
 
@@ -71,34 +71,35 @@ def backprop(labels, theta, z, h, g, x):
     p_f2_W = np.zeros(f2_W.shape)
     p_f2_b = np.zeros(f2_b.shape)
 
-    for i in range(N):
+    for i in range(N):    ### one loop is one sample image right?
         # compute the contribution to nabla_J for sample i
-
+                                                ### nabla is del
         # cross entropy and softmax
         #   compute partial J to partial z[i]
         #   scale by 1/N for averaging
-        expz = np.exp(z[i]-max(z[i]))
-        p_z = expz/sum(expz)/N
-        p_z[labels[i]] -= 1/N
+        expz = np.exp(z[i]-max(z[i]))   ### why - max z[i] ? Isnt z[i] a double?  
+        p_z = expz/sum(expz)/N     ### part A in hw 3 calculating partial of crossent loss with repsect to each one of the outputs why are we dividing by N here
+        p_z[labels[i]] -= 1/N ### why are we doing this? this is the -1 if if label/yhat = to 1 isnt it
 
         # z = Linear_f2(h)
         #   compute partial J to partial h[i]
         #   accumulate partial J to partial f2_W, f2_b
-        # ToDo: uncomment code below to add your own code
-        # p_h = ...
-        # p_f2_W += ...
-        # p_f2_b += ...
+        # ToDo: uncomment code below to add your own code ## part b hw 3
+        p_h = np.matmul(np.transpose(f2_W),p_z)   ### partial of j with respect to h    why not += here? 
+        p_f2_W += np.matmul(p_z.reshape(10,1),np.transpose(h[i].reshape(32,1)))   ####add one nth of value obtained using equations in hw3
+        p_f2_b += p_z
 
         # h = ReLU(g)
         #   compute partial J to partial g[i]
-        # ToDo: uncomment code below to add your own code
-        # p_g = ...
+        # ToDo: uncomment code below to add your own code hw 3 part c
+        p_g = np.multiply(np.heaviside(g[i],0),p_h) ###should 0 equal a 0 or a 1?
 
         # g = Linear_f1(x)
         #   accumulate partial J to partial f1_W, f1_b
         # ToDo: uncomment code below to add your own code
-        # p_f1_W += ...
-        # p_f1_b += ...
+        p_f1_W += np.matmul(p_g.reshape(32,1),np.transpose(x[i].reshape(784,1)))
+        
+        p_f1_b += p_g                            ###try dividing everything added by N if this does not work
 
     return (p_f1_W, p_f1_b, p_f2_W, p_f2_b)
 
@@ -107,12 +108,17 @@ def backprop(labels, theta, z, h, g, x):
 # return updated theta
 def update_theta(theta, nabla_J, epsilon):
     # ToDo: modify code below as needed
-    updated_theta = theta
+    updated_theta = (np.subtract(theta[0],np.multiply(epsilon,nabla_J[0])),
+    np.subtract(theta[1],np.multiply(epsilon,nabla_J[1])),
+    np.subtract(theta[2],np.multiply(epsilon,nabla_J[2])),
+    np.subtract(theta[3],np.multiply(epsilon,nabla_J[3])))
+
+    
     return updated_theta
 
 
 # ToDo: set numpy random seed to the last 8 digits of your CWID
-np.random.seed(12345678)
+np.random.seed(20430439)
 
 # load training data and split them for validation/training
 mnist_train = np.load("mnist_train.npz")
