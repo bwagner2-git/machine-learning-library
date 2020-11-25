@@ -81,13 +81,18 @@ def backprop(labels, theta, z, h, g, x):      ###what are these
         p_z = expz/sum(expz)/N     ### part A in hw 3 calculating partial of crossent loss with repsect to each one of the outputs why are we dividing by N here
         p_z[labels[i]] -= 1/N ### why are we doing this? this is the -1 if if label/yhat = to 1 isnt it
 
+        # print(p_z)
+        # print(np.transpose(p_z.reshape(10,1)))   ###testing making sure what is happening is what I thought
+        # time.sleep(10)
+
         # z = Linear_f2(h)
         #   compute partial J to partial h[i]
         #   accumulate partial J to partial f2_W, f2_b
         # ToDo: uncomment code below to add your own code ## part b hw 3
         p_h = np.matmul(np.transpose(f2_W),p_z)   ### partial of j with respect to h    why not += here? 
-        p_f2_W += np.matmul(p_z.reshape(10,1),np.transpose(h[i].reshape(32,1)))   ####add one nth of value obtained using equations in hw3
+        p_f2_W += np.matmul(p_z.reshape(10,1),np.transpose(h[i].reshape(32,1))) ##p_z has already been multiplied by 1/N so we do not need to again right?   ####add one nth of value obtained using equations in hw3
         p_f2_b += p_z
+        
 
         # h = ReLU(g)
         #   compute partial J to partial g[i]
@@ -97,9 +102,9 @@ def backprop(labels, theta, z, h, g, x):      ###what are these
         # g = Linear_f1(x)
         #   accumulate partial J to partial f1_W, f1_b
         # ToDo: uncomment code below to add your own code
-        p_f1_W += np.matmul(p_g.reshape(32,1),np.transpose(x[i].reshape(784,1)))
+        p_f1_W += np.matmul(p_g.reshape(32,1),np.transpose(x[i].reshape(784,1)))/N
         
-        p_f1_b += p_g                            ###try dividing everything added by N if this does not work
+        p_f1_b += p_g/N                            ###try dividing everything added by N if this does not work
 
     return (p_f1_W, p_f1_b, p_f2_W, p_f2_b)
 
@@ -129,7 +134,8 @@ training_labels = mnist_train["labels"][1000:]
 
 # hyperparameters
 bound = 1 # initial weight range
-epsilon = 0.00001 # learning rate
+#epsilon = 0.00001 # learning rate
+epsilon =.0000008
 batch_size = 4
 
 # start training
