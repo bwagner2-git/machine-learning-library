@@ -102,9 +102,9 @@ def backprop(labels, theta, z, h, g, x):      ###what are these
         # g = Linear_f1(x)
         #   accumulate partial J to partial f1_W, f1_b
         # ToDo: uncomment code below to add your own code
-        p_f1_W += np.matmul(p_g.reshape(32,1),np.transpose(x[i].reshape(784,1)))/N
+        p_f1_W += np.matmul(p_g.reshape(32,1),np.transpose(x[i].reshape(784,1))) ## divide by N?
         
-        p_f1_b += p_g/N                            ###try dividing everything added by N if this does not work
+        p_f1_b += p_g ## divide by N?                            ###try dividing everything added by N if this does not work
 
     return (p_f1_W, p_f1_b, p_f2_W, p_f2_b)
 
@@ -133,10 +133,17 @@ training_images = mnist_train["images"][1000:]
 training_labels = mnist_train["labels"][1000:]
 
 # hyperparameters
-bound = 1 # initial weight range
+#bound = 1 # initial weight range
+#bound = .1 ### pretty good
+bound =.05
 #epsilon = 0.00001 # learning rate
-epsilon =.0000008
+#epsilon =.0000008 ### constant improvement but still not high enough accuracy
+epsilon =.000002
+#batch_size = 4 #initial
 batch_size = 4
+
+############BEST###############
+## epsilon .000002 batch size 4 and bound .1 accuracy about .78
 
 # start training
 start = time.time()
